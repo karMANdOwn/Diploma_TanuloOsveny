@@ -152,10 +152,13 @@ public class GameService {
         return false;
     }
 
-    // Játék befejezése
+    // Játék befejezése - MÓDOSÍTVA
     public void finishGame(String gameId) {
         Game game = activeGames.get(gameId);
-        if (game != null && game.getGameState() == Game.GameState.FINISHED) {
+        if (game != null) {
+            // Állítsuk be a játék állapotát FINISHED-re, ha még nem az
+            game.setGameState(Game.GameState.FINISHED);
+
             // Játékmenet lezárása az adatbázisban
             GameSession gameSession = gameSessionRepository.findByGameId(gameId);
             if (gameSession != null) {

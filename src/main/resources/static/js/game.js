@@ -12,6 +12,11 @@ document.addEventListener('DOMContentLoaded', function () {
     const modalHintText = document.getElementById('modalHintText');
     const modalBonusIndicator = document.getElementById('modalBonusIndicator');
     const gameFinished = document.getElementById('gameFinished');
+    const resultModal = document.getElementById('resultModal');
+    const finalScore = document.getElementById('finalScore');
+    const resultMessage = document.getElementById('resultMessage');
+    const closeResultButton = document.getElementById('closeResultButton');
+    const newGameButton = document.getElementById('newGameButton');
 
     let victoryPlayed = false;
     let currentChallengeData = null;
@@ -20,12 +25,40 @@ document.addEventListener('DOMContentLoaded', function () {
     if (gameFinished) {
         if (!victoryPlayed) {
             victoryPlayed = true;
+            // Hívjuk meg a finish végpontot
+            fetch(`/game/${gameId}/finish`)
+                .catch(error => console.error('Hiba a játék befejezésénél:', error));
+
             setTimeout(() => {
                 playSound('/sounds/victory.mp3');
-                // Irányítsuk át a felhasználót a finish végpontra
-                window.location.href = `/game/${gameId}/finish`;
+                // Átirányítás helyett modális ablak megjelenítése
+                showResultModal();
             }, 2000);
         }
+    }
+
+    // Eredmény modál gombok eseménykezelői
+    if (closeResultButton) {
+        closeResultButton.addEventListener('click', function() {
+            // Hívjuk meg a finish végpontot, mielőtt átirányítanánk
+            fetch(`/game/${gameId}/finish`)
+                .then(() => {
+                    // Átirányítás a profil oldalra
+                    window.location.href = '/profile';
+                })
+                .catch(error => console.error('Hiba a játék befejezésénél:', error));
+        });
+    }
+
+    if (newGameButton) {
+        newGameButton.addEventListener('click', function() {
+            // Biztosítsuk, hogy a jelenlegi játék be legyen fejezve, mielőtt új játékot kezdünk
+            fetch(`/game/${gameId}/finish`)
+                .then(() => {
+                    window.location.href = '/'; // vagy bármilyen útvonal az új játékhoz
+                })
+                .catch(error => console.error('Hiba a játék befejezésénél:', error));
+        });
     }
 
     function playSound(soundUrl) {
@@ -162,8 +195,15 @@ document.addEventListener('DOMContentLoaded', function () {
         if (game.gameState === "CHALLENGE") {
             showChallengeModal(game);
         } else if (game.gameState === "FINISHED") {
-            // Új: Ha a játék befejeződött, irányítsuk a felhasználót a befejezés oldalra
-            window.location.href = `/game/${gameId}/finish`;
+            // Hívjuk meg a finish végpontot
+            fetch(`/game/${gameId}/finish`)
+                .catch(error => console.error('Hiba a játék befejezésénél:', error));
+
+            // Győzelmi hang lejátszása, majd modális ablak megjelenítése
+            playSound('/sounds/victory.mp3');
+            setTimeout(() => {
+                showResultModal(game);
+            }, 1000);
         } else {
             window.location.reload();
         }
@@ -250,6 +290,37 @@ document.addEventListener('DOMContentLoaded', function () {
         challengeModal.style.display = 'none';
     }
 
+    // Új függvény az eredménymodál megjelenítésére
+    function showResultModal(gameData) {
+        if (!gameData) {
+            fetch(`/game/${gameId}`)
+                .then(response => response.json())
+                .then(data => {
+                    displayResultModal(data);
+                })
+                .catch(error => console.error('Hiba a játékállapot lekérésénél:', error));
+        } else {
+            displayResultModal(gameData);
+        }
+    }
+
+    // Eredménymodál tartalmának beállítása
+    function displayResultModal(gameData) {
+        finalScore.textContent = `Végső pontszám: ${gameData.player.score}`;
+
+        // Eredmény üzenet a pontszám alapján
+        if (gameData.player.score >= 100) {
+            resultMessage.textContent = "Kiváló teljesítmény! Igazi bajnok vagy!";
+        } else if (gameData.player.score >= 50) {
+            resultMessage.textContent = "Szép játék! Legközelebb még jobb leszel!";
+        } else {
+            resultMessage.textContent = "Próbáld újra! A gyakorlás teszi a mestert!";
+        }
+
+        // Modál megjelenítése
+        resultModal.style.display = 'flex';
+    }
+
     function showFeedback(isCorrect) {
         const feedbackDiv = document.createElement('div');
         feedbackDiv.className = isCorrect ? 'feedback correct' : 'feedback incorrect';
@@ -301,9 +372,14 @@ document.addEventListener('DOMContentLoaded', function () {
     if (window.gameState === "CHALLENGE") {
         showChallengeModal();
     } else if (window.gameState === "FINISHED") {
-        // Új: ha az oldal betöltésekor FINISHED állapotban vagyunk, irányítsuk a felhasználót a befejezés oldalra
+        // Hívjuk meg a finish végpontot
+        fetch(`/game/${gameId}/finish`)
+            .catch(error => console.error('Hiba a játék befejezésénél:', error));
+
+        // Győzelmi hang lejátszása, majd modális ablak megjelenítése
+        playSound('/sounds/victory.mp3');
         setTimeout(() => {
-            window.location.href = `/game/${gameId}/finish`;
-        }, 2000);
+            showResultModal();
+        }, 1000);
     }
 });

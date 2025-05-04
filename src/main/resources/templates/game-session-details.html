@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Játékmenet részletei - TanulóÖsvény</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+    <link rel="stylesheet" th:href="@{/css/profile.css}">
+    <style>
+        .session-details {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f9f9f9;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .session-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #ddd;
+        }
+
+        .session-title {
+            font-size: 1.5em;
+            color: #4a6baf;
+            margin: 0;
+        }
+
+        .session-info {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 15px;
+            margin-bottom: 30px;
+            padding: 15px;
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+
+        .info-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .info-value {
+            font-size: 1.2em;
+            font-weight: bold;
+            color: #4a6baf;
+            margin-bottom: 5px;
+        }
+
+        .info-label {
+            font-size: 0.9em;
+            color: #666;
+        }
+
+        .attempts-container {
+            margin-top: 20px;
+        }
+
+        .attempts-list {
+            margin-top: 15px;
+        }
+
+        .attempt-item {
+            padding: 15px;
+            margin-bottom: 15px;
+            border-radius: 8px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            position: relative;
+        }
+
+        .attempt-item.correct {
+            background-color: rgba(76, 175, 80, 0.1);
+            border-left: 5px solid #4caf50;
+        }
+
+        .attempt-item.incorrect {
+            background-color: rgba(244, 67, 54, 0.1);
+            border-left: 5px solid #f44336;
+        }
+
+        .attempt-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 8px;
+        }
+
+        .attempt-type {
+            font-weight: bold;
+            color: #333;
+        }
+
+        .attempt-time {
+            font-size: 0.9em;
+            color: #666;
+        }
+
+        .attempt-details {
+            margin-top: 10px;
+        }
+
+        .attempt-row {
+            display: flex;
+            margin-bottom: 5px;
+        }
+
+        .attempt-label {
+            width: 150px;
+            font-weight: bold;
+            color: #555;
+        }
+
+        .attempt-value {
+            flex: 1;
+        }
+
+        .attempts-title {
+            font-size: 1.3em;
+            color: #4a6baf;
+            margin-top: 30px;
+            margin-bottom: 15px;
+            padding-bottom: 5px;
+            border-bottom: 1px solid #ddd;
+        }
+
+        .result-badge {
+            display: inline-block;
+            padding: 3px 8px;
+            border-radius: 12px;
+            font-size: 0.9em;
+            font-weight: bold;
+            margin-left: 10px;
+        }
+
+        .badge-correct {
+            background-color: #4caf50;
+            color: white;
+        }
+
+        .badge-incorrect {
+            background-color: #f44336;
+            color: white;
+        }
+
+        .hints-used {
+            font-size: 0.8em;
+            color: #ff9800;
+            font-style: italic;
+            margin-top: 5px;
+        }
+
+        .back-button {
+            margin-top: 20px;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+<div class="profile-container">
+    <div class="session-details">
+        <div class="session-header">
+            <h1 class="session-title">Játékmenet részletei</h1>
+            <a th:href="@{/profile}" class="btn">Vissza a profilhoz</a>
+        </div>
+
+        <!-- Játékmenet alapadatai -->
+        <div class="session-info">
+            <div class="info-item">
+                <div class="info-value" th:text="${#temporals.format(session.startTime, 'yyyy.MM.dd HH:mm')}">2023.01.01 12:00</div>
+                <div class="info-label">Kezdés ideje</div>
+            </div>
+
+            <div class="info-item">
+                <div class="info-value" th:if="${session.endTime != null}" th:text="${#temporals.format(session.endTime, 'yyyy.MM.dd HH:mm')}">2023.01.01 12:30</div>
+                <div class="info-value" th:unless="${session.endTime != null}">Folyamatban</div>
+                <div class="info-label">Befejezés ideje</div>
+            </div>
+
+            <div class="info-item">
+                <div class="info-value" th:if="${session.educationLevel != null}" th:text="${session.educationLevel.displayName}">1. osztály</div>
+                <div class="info-value" th:unless="${session.educationLevel != null}">Nincs megadva</div>
+                <div class="info-label">Korosztály</div>
+            </div>
+
+            <div class="info-item">
+                <div class="info-value" th:text="${session.finalScore} + ' pont'">100 pont</div>
+                <div class="info-label">Végső pontszám</div>
+            </div>
+
+            <div class="info-item">
+                <div class="info-value" th:text="${session.completed != null && session.completed ? 'Befejezve' : 'Folyamatban'}">Állapot</div>
+                <div class="info-label">Állapot</div>
+            </div>
+
+            <div class="info-item">
+                <div class="info-value" th:if="${session.endTime != null}" th:text="${session.getDurationMinutes()} + ' perc'">30 perc</div>
+                <div class="info-value" th:unless="${session.endTime != null}">-</div>
+                <div class="info-label">Játékidő</div>
+            </div>
+        </div>
+
+        <!-- Kérdések listája -->
+        <h2 class="attempts-title">Megválaszolt kérdések</h2>
+
+        <div class="attempts-list">
+            <div th:if="${#lists.isEmpty(attempts)}" class="empty-list">
+                <p>Nincsenek megválaszolt kérdések ebben a játékmenetben.</p>
+            </div>
+
+            <!-- Az összes kísérlet listázása -->
+            <div th:each="attempt : ${attempts}" class="attempt-item" th:classappend="${attempt.correct ? 'correct' : 'incorrect'}">
+                <div class="attempt-header">
+                    <span class="attempt-type" th:if="${attempt.challengeType != null}" th:text="${attempt.challengeType.displayName}">Feladat típusa</span>
+                    <span class="attempt-type" th:unless="${attempt.challengeType != null}">Ismeretlen feladat típus</span>
+                    <span class="attempt-time" th:text="${#temporals.format(attempt.attemptTime, 'HH:mm:ss')}">12:30:45</span>
+                </div>
+
+                <!-- Válasz eredménye -->
+                <div class="attempt-badges">
+                    <span class="result-badge badge-correct" th:if="${attempt.correct}">Helyes válasz</span>
+                    <span class="result-badge badge-incorrect" th:unless="${attempt.correct}">Helytelen válasz</span>
+                </div>
+
+                <div class="attempt-details">
+                    <div class="attempt-row">
+                        <div class="attempt-label">Feladat azonosító:</div>
+                        <div class="attempt-value" th:text="${attempt.challengeId}">123</div>
+                    </div>
+                    <div class="attempt-row">
+                        <div class="attempt-label">Válaszod:</div>
+                        <div class="attempt-value" th:text="${attempt.userAnswer}">A felhasználó válasza</div>
+                    </div>
+
+                    <!-- Segítség használata -->
+                    <div th:if="${attempt.usedHint}" class="hints-used">
+                        Segítséget használtál ennél a kérdésnél
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="back-button">
+            <a th:href="@{/profile}" class="btn btn-primary">Vissza a profilhoz</a>
+        </div>
+    </div>
+</div>
+</body>
+</html>
