@@ -4,7 +4,9 @@
     height: 100px;
     position: relative;
     perspective: 1000px;
-    margin: 20px auto;
+    margin-left: -20px;
+    transform: translateX(-30px);
+    justify-self: start;
 }
 
 .dice {
@@ -40,15 +42,15 @@
     font-size: 0;
 }
 
-/* Kocka oldalak helyzetének pontos beállítása */
-.dice-face:nth-child(1) { transform: rotateY(0deg) translateZ(50px); }    /* 1-es oldal (elöl) */
-.dice-face:nth-child(2) { transform: rotateY(180deg) translateZ(50px); }  /* 6-os oldal (hátul) */
-.dice-face:nth-child(3) { transform: rotateY(90deg) translateZ(50px); }   /* 3-as oldal (jobb) */
-.dice-face:nth-child(4) { transform: rotateY(-90deg) translateZ(50px); }  /* 4-es oldal (bal) */
-.dice-face:nth-child(5) { transform: rotateX(90deg) translateZ(50px); }   /* 5-ös oldal (felül) */
-.dice-face:nth-child(6) { transform: rotateX(-90deg) translateZ(50px); }  /* 2-es oldal (alul) */
+/* Kocka oldalak helyzete */
+.dice-face:nth-child(1) { transform: rotateY(0deg) translateZ(50px); }
+.dice-face:nth-child(2) { transform: rotateY(180deg) translateZ(50px); }
+.dice-face:nth-child(3) { transform: rotateY(90deg) translateZ(50px); }
+.dice-face:nth-child(4) { transform: rotateY(-90deg) translateZ(50px); }
+.dice-face:nth-child(5) { transform: rotateX(90deg) translateZ(50px); }
+.dice-face:nth-child(6) { transform: rotateX(-90deg) translateZ(50px); }
 
-/* Pöttyök a kockán */
+/* Pötty stílus */
 .dot {
     display: block;
     width: 16px;
@@ -58,13 +60,21 @@
     box-shadow: inset 0 3px #111, inset 0 -3px #555;
 }
 
-/* 1-es oldal: 1 pötty középen */
+/* Pötty tartó konténer */
+.dot-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+}
+
+/* Face 1 */
 .face-1 {
     justify-content: center;
     align-items: center;
 }
 
-/* 2-es oldal: 2 pötty átlósan */
+/* Face 2 */
 .face-2 {
     display: flex;
     justify-content: space-between;
@@ -78,7 +88,7 @@
     margin: 0 15px 15px 0;
 }
 
-/* 3-as oldal: 3 pötty átlósan */
+/* Face 3 */
 .face-3 {
     justify-content: space-between;
 }
@@ -95,7 +105,7 @@
     margin: 0 15px 15px 0;
 }
 
-/* 4-es oldal: 4 pötty a sarkokban */
+/* Face 4 */
 .face-4 {
     flex-wrap: wrap;
     justify-content: space-between;
@@ -110,7 +120,7 @@
     align-items: center;
 }
 
-/* 5-ös oldal: 5 pötty */
+/* Face 5 */
 .face-5 {
     flex-wrap: wrap;
     justify-content: space-between;
@@ -131,7 +141,7 @@
     transform: translate(-50%, -50%);
 }
 
-/* 6-os oldal: 6 pötty */
+/* Face 6 */
 .face-6 {
     flex-wrap: wrap;
     justify-content: space-between;
@@ -146,10 +156,32 @@
     align-items: center;
 }
 
-/* Pont konténer általános stílusa */
-.dot-container {
-    position: relative;
-    display: flex;
-    justify-content: center;
+/* Dobókocka középre igazítása: a pontszám és dobás gomb között */
+.dice-row {
+    display: grid;
+    grid-template-columns: auto 1fr auto;
     align-items: center;
+    gap: 15px;
+}
+
+.dice-row .player-info {
+    flex: 1;
+    text-align: left;
+}
+
+.dice-row .dice-container {
+    flex: 0 0 auto;
+    margin: 0 auto;
+}
+
+.dice-row #rollButton {
+    flex: 0 0 auto;
+    margin-left: auto;
+}
+
+.game-info {
+    min-width: 600px;
+    min-height: 160px;     /* vagy amennyi kell */
+    overflow: visible;
+    padding: 30px 30px;     /* nagyobb felső/alsó tér is növeli a magasságot */
 }

@@ -34,7 +34,14 @@ public class GameController {
     public String getGame(@PathVariable String gameId, Model model) {
         Game game = gameService.getGame(gameId);
         if (game == null) {
-            return "redirect:/";
+            // Ha a játék nem található az aktív játékok között, próbáljuk meg visszatölteni
+            // a játékot a GameSession alapján
+            game = gameService.loadGameFromSession(gameId);
+
+            // Ha még mindig nem található, akkor átirányítjuk a főoldalra
+            if (game == null) {
+                return "redirect:/";
+            }
         }
         model.addAttribute("game", game);
         return "game";

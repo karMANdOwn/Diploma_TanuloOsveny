@@ -6,14 +6,23 @@
     <link rel="stylesheet" th:href="@{/css/style.css}">
     <link rel="stylesheet" th:href="@{/css/profile.css}">
     <link rel="stylesheet" th:href="@{/css/auth.css}">
+    <style>
+        .profile-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .back-link {
+            margin-left: auto;
+        }
+    </style>
 </head>
 <body>
 <div class="profile-container">
     <div class="profile-header">
         <h1>Profil szerkesztése</h1>
-        <div class="user-status">
-            <p>Bejelentkezve mint: <span th:text="${user.username}">felhasználó</span></p>
-        </div>
+        <a th:href="@{/profile}" class="btn back-link">Vissza a profilhoz</a>
     </div>
 
     <div class="auth-card profile-edit-card">
@@ -55,7 +64,6 @@
             </div>
 
             <div class="form-actions">
-                <a th:href="@{/profile}" class="btn">Vissza a profilhoz</a>
                 <button type="submit" class="btn btn-primary">Mentés</button>
             </div>
         </form>
@@ -89,30 +97,8 @@
     </div>
 </div>
 
-<script>
-    // Jelszó egyezőség ellenőrzése
-    document.getElementById('confirmPassword').addEventListener('input', function() {
-        const password = document.getElementById('newPassword').value;
-        const confirmPassword = this.value;
-        const errorElement = document.getElementById('passwordMatchError');
+<script th:src="@{/js/dice.js}"></script>
+<script th:src="@{/js/game.js}"></script>
 
-        if (password !== confirmPassword) {
-            errorElement.style.display = 'block';
-        } else {
-            errorElement.style.display = 'none';
-        }
-    });
-
-    // Form elküldés előtti ellenőrzés a jelszó változtatásnál
-    document.querySelectorAll('form')[1].addEventListener('submit', function(event) {
-        const password = document.getElementById('newPassword').value;
-        const confirmPassword = document.getElementById('confirmPassword').value;
-
-        if (password !== confirmPassword) {
-            event.preventDefault();
-            document.getElementById('passwordMatchError').style.display = 'block';
-        }
-    });
-</script>
 </body>
 </html>

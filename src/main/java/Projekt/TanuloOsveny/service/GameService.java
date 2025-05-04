@@ -51,6 +51,41 @@ public class GameService {
         return activeGames.get(gameId);
     }
 
+    // Új metódus: játék betöltése a GameSession adatokból, ha nincs az aktív játékok között
+    public Game loadGameFromSession(String gameId) {
+        // Ha a játék már aktív, akkor visszaadjuk
+        Game existingGame = activeGames.get(gameId);
+        if (existingGame != null) {
+            return existingGame;
+        }
+
+        // Különben megpróbáljuk betölteni a GameSession alapján
+        GameSession gameSession = gameSessionRepository.findByGameId(gameId);
+        if (gameSession != null && !gameSession.isCompleted()) {
+            // Új játék létrehozása a játékmenet adatai alapján
+            Game game = new Game();
+            game.setId(gameId);
+
+            // Tábla inicializálása az adott nehézségi szintnek megfelelően
+            game.setBoard(generateBoard(50, gameSession.getEducationLevel()));
+
+            // Játék állapotának beállítása
+            game.setGameState(Game.GameState.WAITING_FOR_ROLL);
+
+            // Játékos pontszámának beállítása a GameSession alapján
+            Player player = new Player();
+            player.setScore(gameSession.getFinalScore());
+            game.setPlayer(player);
+
+            // Játék hozzáadása az aktív játékokhoz
+            activeGames.put(gameId, game);
+
+            return game;
+        }
+
+        return null;
+    }
+
     // Véletlenszerű dobás
     public void rollDice(String gameId) {
         Game game = activeGames.get(gameId);
