@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Fejlesztő Társasjáték</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+<div class="game-container">
+    <h1>TanulóÖsvény - Fejlesztő Társasjáték Gyerekeknek</h1>
+
+    <!-- Felhasználói státusz megjelenítése -->
+    <div class="user-status" th:if="${#authentication != null && #authentication.isAuthenticated() && #authentication.principal != 'anonymousUser'}">
+        <p>Bejelentkezve mint: <span th:text="${#authentication.principal.username}">felhasználó</span></p>
+        <div class="user-actions">
+            <a th:href="@{/profile}" class="btn btn-sm">Profil</a>
+            <a th:href="@{/logout}" class="btn btn-sm btn-outline">Kijelentkezés</a>
+        </div>
+    </div>
+
+    <div class="instructions">
+        <h2>Játék szabályai:</h2>
+        <ol>
+            <li>Dobj a dobókockával a "Dobás" gombra kattintva.</li>
+            <li>Az bábú automatikusan annyit lép előre, amennyit dobtál.</li>
+            <li>Ha feladat mezőre érkezel, válaszolnod kell egy kérdésre.</li>
+            <li>Helyes válasz esetén tovább dobhatsz, helytelen válasz esetén újra kell próbálkoznod.</li>
+        </ol>
+    </div>
+    <div class="welcome-section">
+        <!-- Módosítás: Ha be van jelentkezve, akkor a game/new-ra, egyébként a login oldalra -->
+        <a th:href="${#authentication != null && #authentication.isAuthenticated() && #authentication.principal != 'anonymousUser'} ? @{/user/game/choose-level} : @{/login}" class="btn">Kezdés</a>
+    </div>
+</div>
+
+<script th:src="@{/js/game.js}"></script>
+</body>
+</html>

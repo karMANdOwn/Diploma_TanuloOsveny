@@ -1,0 +1,302 @@
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: 'Comic Sans MS', cursive, sans-serif;
+    background-color: #f5f5f5;
+    color: #333;
+    line-height: 1.6;
+}
+
+.game-container {
+    max-width: 1000px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+h1 {
+    text-align: center;
+    margin-bottom: 20px;
+    color: #4a6baf;
+}
+
+.game-info {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    padding: 10px;
+    background-color: #fff;
+    border-radius: 10px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.player-info {
+    font-size: 1.2em;
+    font-weight: bold;
+}
+
+.dice-area {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 15px;
+}
+
+#diceImage {
+    width: 50px;
+    height: 50px;
+    margin-right: 10px;
+}
+
+.game-board {
+    margin-bottom: 20px;
+    padding: 20px;
+    background-color: #fff;
+    border-radius: 10px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    overflow-x: auto;
+}
+
+.board-container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    max-width: 100%;
+}
+
+.board-field {
+    width: 80px;
+    height: 80px;
+    margin: 5px;
+    background-size: cover;
+    background-position: center;
+    position: relative;
+    border-radius: 10px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.field-number {
+    position: absolute;
+    bottom: 5px;
+    right: 5px;
+    background-color: rgba(255, 255, 255, 0.7);
+    padding: 2px 5px;
+    border-radius: 50%;
+    font-size: 0.8em;
+}
+
+/* Játékos figura stílus */
+.player {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 35px;
+    height: 35px;
+    z-index: 10;
+}
+
+/* Ha képet használunk a figurához */
+.player-image {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+}
+
+.challenge-area {
+    margin-bottom: 20px;
+    padding: 20px;
+    background-color: #fff;
+    border-radius: 10px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.challenge-container h3 {
+    margin-bottom: 15px;
+    color: #4a6baf;
+}
+
+.challenge-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-bottom: 15px;
+}
+
+.challenge-image {
+    max-width: 100%;
+    max-height: 300px;
+    margin-bottom: 10px;
+    border-radius: 5px;
+}
+
+.challenge-answer {
+    display: flex;
+    margin-bottom: 15px;
+}
+
+#answerInput {
+    flex: 1;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    margin-right: 10px;
+}
+
+.challenge-hint {
+    text-align: center;
+}
+
+#hintText {
+    margin-top: 10px;
+    font-style: italic;
+    color: #666;
+}
+
+.game-finished {
+    text-align: center;
+    padding: 20px;
+    background-color: #fff;
+    border-radius: 10px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.game-finished h2 {
+    color: #4a6baf;
+    margin-bottom: 15px;
+}
+
+.btn {
+    display: inline-block;
+    padding: 10px 20px;
+    background-color: #4a6baf;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 1em;
+    transition: background-color 0.3s;
+}
+
+.btn:hover {
+    background-color: #3a5691;
+}
+
+.btn-small {
+    padding: 5px 10px;
+    font-size: 0.8em;
+}
+
+.hidden {
+    display: none;
+}
+
+/* Bónusz mező kijelzésének stílusa */
+.bonus-indicator {
+    background-color: #ffcc00;
+    padding: 5px 10px;
+    border-radius: 5px;
+    margin-bottom: 10px;
+    text-align: center;
+}
+
+.bonus-text {
+    color: #aa5500;
+    margin: 0;
+    font-weight: bold;
+    animation: pulse 1.5s infinite;
+}
+
+@keyframes pulse {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.05); }
+    100% { transform: scale(1); }
+}
+
+/* Mező típusok egyedi színei és képei */
+.start {
+    background-color: #90ee90;
+    background-image: url('../images/board/start.png');
+    background-size: cover;
+    background-position: center;
+}
+
+.normal {
+    background-color: #ffffff;
+    background-image: url('../images/board/normal.png');
+    background-size: cover;
+    background-position: center;
+}
+
+.challenge {
+    background-color: #ffcc99;
+    background-image: url('../images/board/challenge.png');
+    background-size: cover;
+    background-position: center;
+}
+
+.bonus {
+    background-color: #ffff99;
+    background-image: url('../images/board/bonus.png');
+    background-size: cover;
+    background-position: center;
+    position: relative;
+}
+
+/* Új stílus a bónusz mezőhöz */
+.bonus::after {
+    content: "Bónusz";
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: rgba(255, 204, 0, 0.8);
+    color: #aa5500;
+    padding: 3px 6px;
+    border-radius: 5px;
+    font-size: 0.7em;
+    font-weight: bold;
+    z-index: 5;
+}
+
+.finish {
+    background-color: #ff9999;
+    background-image: url('../images/board/finish.png');
+    background-size: cover;
+    background-position: center;
+}
+
+/* Dobókocka komponensek */
+.dot-container {
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+/* Reszponzív design */
+@media (max-width: 768px) {
+    .game-info {
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    .board-field {
+        width: 60px;
+        height: 60px;
+    }
+
+    .player {
+        width: 25px;
+        height: 25px;
+    }
+
+    .bonus::after {
+        font-size: 0.6em;
+        padding: 2px 4px;
+    }
+}

@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Regisztráció - TanulóÖsvény</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+    <link rel="stylesheet" th:href="@{/css/auth.css}">
+</head>
+<body>
+<div class="auth-container">
+    <div class="auth-card">
+        <h1>TanulóÖsvény</h1>
+        <h2>Regisztráció</h2>
+
+        <div th:if="${error}" class="alert alert-error" th:text="${error}">
+            Hiba történt!
+        </div>
+
+        <form th:action="@{/register}" method="post" th:object="${user}">
+            <div class="form-group">
+                <label for="username">Felhasználónév</label>
+                <input type="text" id="username" name="username" th:field="*{username}" required>
+                <div th:if="${#fields.hasErrors('username')}" class="error-message" th:errors="*{username}"></div>
+            </div>
+
+            <div class="form-group">
+                <label for="fullName">Teljes név</label>
+                <input type="text" id="fullName" name="fullName" th:field="*{fullName}" required>
+                <div th:if="${#fields.hasErrors('fullName')}" class="error-message" th:errors="*{fullName}"></div>
+            </div>
+
+            <div class="form-group">
+                <label for="age">Életkor</label>
+                <input type="number" id="age" name="age" th:field="*{age}" min="5" max="15" required>
+                <div th:if="${#fields.hasErrors('age')}" class="error-message" th:errors="*{age}"></div>
+            </div>
+
+            <div class="form-group">
+                <label for="educationLevel">Évfolyam</label>
+                <select id="educationLevel" name="educationLevel" th:field="*{educationLevel}" required>
+                    <option value="">Válassz évfolyamot</option>
+                    <option th:each="level : ${T(Projekt.TanuloOsveny.model.User.EducationLevel).values()}"
+                            th:value="${level}" th:text="${level.displayName}"></option>
+                </select>
+                <div th:if="${#fields.hasErrors('educationLevel')}" class="error-message" th:errors="*{educationLevel}"></div>
+            </div>
+
+            <div class="form-group">
+                <label for="password">Jelszó</label>
+                <input type="password" id="password" name="password" th:field="*{password}" required
+                       pattern="^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{6,}$"
+                       title="A jelszónak legalább 6 karakter hosszúnak kell lennie, és tartalmaznia kell legalább egy betűt és egy számot">
+                <div th:if="${#fields.hasErrors('password')}" class="error-message" th:errors="*{password}"></div>
+            </div>
+
+            <div class="form-group">
+                <label for="confirmPassword">Jelszó megerősítése</label>
+                <input type="password" id="confirmPassword" name="confirmPassword" required>
+                <div id="passwordMatchError" class="error-message" style="display: none;">A jelszavak nem egyeznek!</div>
+            </div>
+
+            <div class="form-actions">
+                <a th:href="@{/login}" class="btn btn-secondary">Vissza a bejelentkezéshez</a>
+                <button type="submit" class="btn btn-primary">Regisztráció</button>
+            </div>
+        </form>
+
+        <div class="auth-links">
+            <p>Már van fiókod? <a th:href="@{/login}">Bejelentkezés</a></p>
+            <p><a th:href="@{/}">Vissza a főoldalra</a></p>
+        </div>
+    </div>
+
+    <div class="auth-info">
+        <h3>Csatlakozz a TanulóÖsvényhez!</h3>
+        <p>Válaszd ki a korosztályodnak megfelelő játékmódot:</p>
+        <div class="education-level-info">
+            <div class="level-card">
+                <h4>1. osztály</h4>
+                <p>Képes és hangos feladványok, egyszerű számlálási és felismerési gyakorlatok</p>
+            </div>
+            <div class="level-card">
+                <h4>2-4. osztály</h4>
+                <p>Alapvető matematikai és logikai feladatok, olvasási gyakorlatok</p>
+            </div>
+            <div class="level-card">
+                <h4>5-8. osztály</h4>
+                <p>Összetettebb logikai és matematikai feladványok, ismeretbővítő kérdések</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Jelszó egyezőség ellenőrzése
+    document.getElementById('confirmPassword').addEventListener('input', function() {
+        const password = document.getElementById('password').value;
+        const confirmPassword = this.value;
+        const errorElement = document.getElementById('passwordMatchError');
+
+        if (password !== confirmPassword) {
+            errorElement.style.display = 'block';
+        } else {
+            errorElement.style.display = 'none';
+        }
+    });
+
+    // Form elküldés előtti ellenőrzés
+    document.querySelector('form').addEventListener('submit', function(event) {
+        const password = document.getElementById('password').value;
+        const confirmPassword = document.getElementById('confirmPassword').value;
+
+        if (password !== confirmPassword) {
+            event.preventDefault();
+            document.getElementById('passwordMatchError').style.display = 'block';
+        }
+    });
+</script>
+</body>
+</html>

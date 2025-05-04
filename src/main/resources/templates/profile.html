@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Saját Profil - TanulóÖsvény</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+    <link rel="stylesheet" th:href="@{/css/profile.css}">
+</head>
+<body>
+<div class="profile-container">
+    <div class="profile-header">
+        <h1>Üdvözlünk, <span th:text="${user.fullName}">Név</span>!</h1>
+        <div class="user-status">
+            <p>Bejelentkezve mint: <span th:text="${user.username}">felhasználó</span></p>
+        </div>
+        <div class="profile-actions">
+            <a th:href="@{/}" class="btn">Főoldal</a>
+            <a th:href="@{/profile/edit}" class="btn">Profil szerkesztése</a>
+            <a th:href="@{/logout}" class="btn btn-outline">Kijelentkezés</a>
+        </div>
+    </div>
+
+    <div class="profile-alert" th:if="${param.updated}">
+        <p>A profilod sikeresen frissítve!</p>
+    </div>
+
+    <div class="profile-alert" th:if="${param.passwordChanged}">
+        <p>A jelszavad sikeresen megváltoztatva!</p>
+    </div>
+
+    <div class="profile-content">
+        <div class="profile-info">
+            <div class="info-card">
+                <h2>Felhasználói adatok</h2>
+                <div class="info-row">
+                    <div class="info-label">Felhasználónév:</div>
+                    <div class="info-value" th:text="${user.username}">felhasználó</div>
+                </div>
+                <div class="info-row">
+                    <div class="info-label">Teljes név:</div>
+                    <div class="info-value" th:text="${user.fullName}">Teljes Név</div>
+                </div>
+                <div class="info-row">
+                    <div class="info-label">Életkor:</div>
+                    <div class="info-value" th:text="${user.age}">10</div>
+                </div>
+                <div class="info-row">
+                    <div class="info-label">Évfolyam:</div>
+                    <div class="info-value" th:text="${user.educationLevel.displayName}">1. osztály</div>
+                </div>
+                <div class="info-row">
+                    <div class="info-label">Regisztráció:</div>
+                    <div class="info-value" th:text="${#temporals.format(user.registrationDate, 'yyyy.MM.dd HH:mm')}">2023.01.01</div>
+                </div>
+            </div>
+
+            <div class="stats-card">
+                <h2>Statisztikák</h2>
+                <div class="stats-grid">
+                    <div class="stat-item">
+                        <div class="stat-value" th:text="${#lists.size(sessions)}">0</div>
+                        <div class="stat-label">Játékok száma</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value" th:text="${#numbers.formatDecimal(avgScore, 1, 1)}">0</div>
+                        <div class="stat-label">Átlagos pontszám</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value" th:text="${correctAnswers}">0</div>
+                        <div class="stat-label">Helyes válaszok</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value" th:text="${#numbers.formatDecimal(correctPercentage, 1, 1)} + '%'">0%</div>
+                        <div class="stat-label">Pontosság</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="game-history">
+            <h2>Játékok története</h2>
+
+            <div class="new-game-button">
+                <!-- Itt van a módosítás: most már a choose-level oldalra vezet -->
+                <a th:href="@{/user/game/choose-level}" class="btn btn-large">Új játék indítása</a>
+            </div>
+
+            <div class="empty-history" th:if="${#lists.isEmpty(sessions)}">
+                <p>Még nem játszottál egy játékot sem. Kattints az "Új játék indítása" gombra a kezdéshez!</p>
+            </div>
+
+            <div class="history-list" th:if="${not #lists.isEmpty(sessions)}">
+                <div th:each="gameSession : ${sessions}" class="history-item">
+                    <div class="history-date" th:text="${#temporals.format(gameSession.startTime, 'yyyy.MM.dd HH:mm')}">2023.01.01</div>
+                    <div class="history-level" th:text="${gameSession.educationLevel.displayName}">1. osztály</div>
+                    <div class="history-score" th:text="${gameSession.finalScore} + ' pont'">0 pont</div>
+                    <div class="history-status" th:text="${gameSession.completed ? 'Befejezve' : 'Folyamatban'}">Befejezve</div>
+                    <div class="history-actions">
+                        <a th:href="@{/profile/game/{id}(id=${gameSession.id})}" class="btn btn-sm">Részletek</a>
+                        <a th:href="@{/game/{id}(id=${gameSession.gameId})}" class="btn btn-sm" th:if="${not gameSession.completed}">Folytatás</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

@@ -1,0 +1,162 @@
+/* Modal styles */
+.modal-overlay {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.7);
+    z-index: 1000;
+    justify-content: center;
+    align-items: center;
+}
+
+.modal-container {
+    background-color: white;
+    border-radius: 15px;
+    padding: 20px;
+    width: 80%;
+    max-width: 600px;
+    max-height: 90vh;
+    overflow-y: auto;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+    animation: modalFadeIn 0.3s ease-out;
+}
+
+@keyframes modalFadeIn {
+    from { opacity: 0; transform: scale(0.8); }
+    to { opacity: 1; transform: scale(1); }
+}
+
+/* Vízszintes válaszlehetőségek */
+.options-container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 10px;
+    margin-bottom: 20px;
+}
+
+.option-item {
+    flex: 1 1 40%;
+    min-width: 200px;
+    background-color: #f5f5f5;
+    border-radius: 8px;
+    padding: 10px;
+    text-align: center;
+    transition: background-color 0.2s;
+}
+
+.option-item:hover {
+    background-color: #e0e0e0;
+}
+
+.option-item input[type="radio"] {
+    display: none;
+}
+
+.option-item label {
+    display: block;
+    width: 100%;
+    cursor: pointer;
+    padding: 8px;
+}
+
+.option-item input[type="radio"]:checked + label {
+    background-color: #4a6baf;
+    color: white;
+    border-radius: 6px;
+}
+
+/* Modal fejléc */
+.modal-header {
+    margin-bottom: 15px;
+    text-align: center;
+}
+
+.modal-header h3 {
+    font-size: 1.4em;
+    color: #4a6baf;
+}
+
+/* Modal gombok */
+.modal-actions {
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+    margin-top: 20px;
+}
+
+/* Feladvány kép konténer */
+.challenge-image-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 15px;
+}
+
+.challenge-image {
+    max-width: 100%;
+    max-height: 250px;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+/* Bónusz mező jelzés a modálban */
+.modal-bonus-indicator {
+    background-color: #ffcc00;
+    padding: 5px 10px;
+    border-radius: 5px;
+    margin-bottom: 10px;
+    text-align: center;
+}
+
+.modal-bonus-text {
+    color: #aa5500;
+    margin: 0;
+    font-weight: bold;
+    animation: pulse 1.5s infinite;
+}
+
+@keyframes pulse {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.05); }
+    100% { transform: scale(1); }
+}
+
+/* Hang lejátszó */
+audio {
+    width: 100%;
+    margin-bottom: 15px;
+}
+
+/* Segítség szöveg */
+#modalHintText {
+    padding: 10px;
+    background-color: #f0f7ff;
+    border-left: 4px solid #4a6baf;
+    margin-top: 15px;
+    color: #333;
+}
+
+/* Reszponzív design */
+@media (max-width: 768px) {
+    .modal-container {
+        width: 95%;
+        padding: 15px;
+    }
+
+    .options-container {
+        flex-direction: column;
+    }
+
+    .option-item {
+        min-width: unset;
+    }
+
+    .modal-actions {
+        flex-direction: column;
+        gap: 10px;
+    }
+}

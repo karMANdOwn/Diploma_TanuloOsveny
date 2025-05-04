@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Tanulójáték</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+    <link rel="stylesheet" th:href="@{/css/dice.css}">
+    <link rel="stylesheet" th:href="@{/css/modal.css}">
+    <style>
+        /* Fejléc stílus a TanulóÖsvény és user info egy sorba rendezéséhez */
+        .game-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            width: 100%;
+        }
+
+        .game-title {
+            text-align: center;
+            flex: 1;
+            margin: 0;
+            color: #4a6baf;
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .user-name {
+            color: #333;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body th:data-game-id="${game.id}" th:data-game-state="${game.gameState.name()}">
+<div class="game-container">
+    <!-- Módosított fejléc, ahol a cím és user info egy sorban van -->
+    <div class="game-header">
+        <div style="width: 200px;"></div> <!-- Üres tér a bal oldalon az egyensúlyért -->
+        <h1 class="game-title">TanulóÖsvény</h1>
+        <div class="user-info">
+            <span class="user-name">test</span>
+            <a th:href="@{/game/{id}/finish(id=${game.id})}" class="btn">Játék befejezése</a>
+        </div>
+    </div>
+
+    <div class="game-info">
+        <div class="player-info">
+            <span>Pontszám: </span>
+            <span id="playerScore" th:text="${game.player.score}">0</span>
+        </div>
+
+        <div id="diceArea" class="dice-area">
+            <!-- 3D Dice Component -->
+            <div class="dice-container">
+                <div class="dice">
+                    <!-- 1-es oldal (elöl) -->
+                    <div class="dice-face face-1">
+                        <div class="dot"></div>
+                    </div>
+
+                    <!-- 6-os oldal (hátul) -->
+                    <div class="dice-face face-6">
+                        <div class="dot-container"><div class="dot"></div></div>
+                        <div class="dot-container"><div class="dot"></div></div>
+                        <div class="dot-container"><div class="dot"></div></div>
+                        <div class="dot-container"><div class="dot"></div></div>
+                        <div class="dot-container"><div class="dot"></div></div>
+                        <div class="dot-container"><div class="dot"></div></div>
+                    </div>
+
+                    <!-- 3-as oldal (jobb) -->
+                    <div class="dice-face face-3">
+                        <div class="dot-container"><div class="dot"></div></div>
+                        <div class="dot-container"><div class="dot"></div></div>
+                        <div class="dot-container"><div class="dot"></div></div>
+                    </div>
+
+                    <!-- 4-es oldal (bal) -->
+                    <div class="dice-face face-4">
+                        <div class="dot-container"><div class="dot"></div></div>
+                        <div class="dot-container"><div class="dot"></div></div>
+                        <div class="dot-container"><div class="dot"></div></div>
+                        <div class="dot-container"><div class="dot"></div></div>
+                    </div>
+
+                    <!-- 5-ös oldal (felül) -->
+                    <div class="dice-face face-5">
+                        <div class="dot-container"><div class="dot"></div></div>
+                        <div class="dot-container"><div class="dot"></div></div>
+                        <div class="dot-container"><div class="dot"></div></div>
+                        <div class="dot-container"><div class="dot"></div></div>
+                        <div class="dot-container"><div class="dot"></div></div>
+                    </div>
+
+                    <!-- 2-es oldal (alul) -->
+                    <div class="dice-face face-2">
+                        <div class="dot-container"><div class="dot"></div></div>
+                        <div class="dot-container"><div class="dot"></div></div>
+                    </div>
+                </div>
+            </div>
+            <button id="rollButton" class="btn" th:if="${game.gameState.name() == 'WAITING_FOR_ROLL'}">Dobás</button>
+        </div>
+    </div>
+
+    <div class="game-board">
+        <div class="board-container">
+            <!-- Javított verzió a háttérképek kezeléséhez -->
+            <div th:each="field, status : ${game.board}"
+                 th:id="'field-' + ${status.index}"
+                 th:class="'board-field ' + ${field.type.name().toLowerCase()}">
+                <span class="field-number" th:text="${status.index}"></span>
+                <!-- Egyszerűsített játékos jelölő -->
+                <div id="player" class="player"
+                     th:if="${game.player.position == status.index}">
+                    <img th:src="@{/images/player.png}" alt="Játékos" class="player-image">
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="challengeArea" class="challenge-area" th:if="${game.gameState.name() == 'CHALLENGE'}">
+        <div class="challenge-container">
+            <div class="bonus-indicator" th:if="${game.board[game.player.position].type.name() == 'BONUS'}">
+                <h3 class="bonus-text">BÓNUSZ MEZŐ - DUPLA PONT!</h3>
+            </div>
+            <h3 th:text="${game.board[game.player.position].challenge.question}">Kérdés</h3>
+
+            <div class="challenge-content">
+                <!-- Dinamikus kép megjelenítés a feladványból -->
+                <img th:if="${game.board[game.player.position].challenge.imageUrl != null}"
+                     th:src="@{${game.board[game.player.position].challenge.imageUrl}}"
+                     alt="Feladat kép" class="challenge-image">
+
+                <!-- Dinamikus hang megjelenítés a feladványból -->
+                <audio id="challengeSound" controls
+                       th:if="${game.board[game.player.position].challenge.soundUrl != null}">
+                    <source th:src="@{${game.board[game.player.position].challenge.soundUrl}}" type="audio/mpeg">
+                    A böngésződ nem támogatja az audio elemet.
+                </audio>
+            </div>
+
+            <!-- Új feleletválasztós megjelenítés -->
+            <div class="challenge-options">
+                <form id="answerForm">
+                    <div class="options-container">
+                        <div th:each="option, optionStat : ${game.board[game.player.position].challenge.options}" class="option-item">
+                            <input type="radio" name="answerOption"
+                                   th:id="'option-' + ${optionStat.index}"
+                                   th:value="${option}"
+                                   th:checked="${game.selectedAnswer == option}">
+                            <label th:for="'option-' + ${optionStat.index}"
+                                   th:text="${option}">Válaszlehetőség</label>
+                        </div>
+                    </div>
+                    <button type="button" id="answerButton" class="btn">Ellenőrzés</button>
+                </form>
+            </div>
+
+            <div class="challenge-hint">
+                <button id="hintButton" class="btn btn-small">Segítség</button>
+                <p id="hintText" class="hidden"
+                   th:text="${game.board[game.player.position].challenge.hint}">Segítség</p>
+            </div>
+        </div>
+    </div>
+
+    <div id="gameFinished" class="game-finished" th:if="${game.gameState.name() == 'FINISHED'}">
+        <div class="finished-container">
+            <h2>Gratulálunk!</h2>
+            <p>Sikeresen teljesítetted a játékot!</p>
+            <p>Elért pontszám: <span th:text="${game.player.score}">0</span></p>
+            <a href="/game/new" class="btn">Új játék</a>
+        </div>
+    </div>
+</div>
+<div id="challengeModal" class="modal-overlay">
+    <div class="modal-container">
+        <div class="modal-header">
+            <div id="modalBonusIndicator" class="modal-bonus-indicator" style="display: none;">
+                <h3 class="modal-bonus-text">BÓNUSZ MEZŐ - DUPLA PONT!</h3>
+            </div>
+            <h3 id="modalChallengeQuestion">Kérdés</h3>
+        </div>
+
+        <div class="challenge-image-container">
+            <img id="modalChallengeImage" class="challenge-image" style="display: none;" alt="Feladat kép">
+        </div>
+
+        <audio id="modalChallengeSound" controls style="display: none;">
+            <source src="" type="audio/mpeg">
+            A böngésződ nem támogatja az audio elemet.
+        </audio>
+
+        <div class="challenge-options">
+            <form id="modalAnswerForm">
+                <div id="modalOptionsContainer" class="options-container">
+                    <!-- Itt lesznek a válaszlehetőségek -->
+                </div>
+
+                <div class="modal-actions">
+                    <button type="button" id="modalAnswerButton" class="btn">Ellenőrzés</button>
+                    <button type="button" id="modalHintButton" class="btn btn-small">Segítség</button>
+                </div>
+            </form>
+        </div>
+
+        <div class="challenge-hint">
+            <p id="modalHintText" class="hidden"></p>
+        </div>
+    </div>
+</div>
+<!-- Javított JavaScript inicializálása -->
+<script>
+    // A gameId a body data-game-id attribútumából jön
+    document.addEventListener('DOMContentLoaded', function() {
+        window.gameId = document.body.getAttribute('data-game-id');
+        window.gameState = document.body.getAttribute('data-game-state');
+
+        // Játék befejezése gomb helyes működéséhez
+        document.querySelector('.user-info .btn').addEventListener('click', function(e) {
+            e.preventDefault();
+            window.location.href = '/profile';
+        });
+    });
+</script>
+<script th:src="@{/js/dice.js}"></script>
+<script th:src="@{/js/game.js}"></script>
+</body>
+</html>

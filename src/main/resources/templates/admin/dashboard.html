@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Admin Irányítópult - TanulóÖsvény</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+    <link rel="stylesheet" th:href="@{/css/admin.css}">
+</head>
+<body>
+<div class="admin-container">
+    <div class="admin-sidebar">
+        <h2>Admin Menü</h2>
+        <ul class="admin-menu">
+            <li class="active"><a th:href="@{/admin}">Irányítópult</a></li>
+            <li><a th:href="@{/admin/users}">Felhasználók</a></li>
+            <li><a th:href="@{/admin/sessions}">Játékmenetek</a></li>
+            <li><a th:href="@{/admin/challenges}">Feladványok</a></li>
+            <li><a th:href="@{/logout}">Kijelentkezés</a></li>
+        </ul>
+    </div>
+
+    <div class="admin-content">
+        <h1>Admin Irányítópult</h1>
+
+        <div class="dashboard-stats">
+            <div class="stat-card">
+                <h3>Összes felhasználó</h3>
+                <div class="stat-value" th:text="${totalUsers}">0</div>
+            </div>
+
+            <div class="stat-card">
+                <h3>Befejezett játékok</h3>
+                <div class="stat-value" th:text="${totalCompletedGames}">0</div>
+            </div>
+        </div>
+
+        <div class="chart-row">
+            <div class="chart-container">
+                <h3>Felhasználók korosztály szerinti eloszlása</h3>
+                <div class="chart">
+                    <div th:each="entry : ${educationLevelDistribution}" class="chart-bar">
+                        <div class="bar-label" th:text="${entry.key.displayName}">Korosztály</div>
+                        <div class="bar-value" th:style="'height: ' + ${entry.value * 100 / totalUsers} + '%'"
+                             th:text="${entry.value}">0</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="chart-container">
+                <h3>Átlagos pontszámok korosztály szerint</h3>
+                <div class="chart">
+                    <div th:each="entry : ${avgScoresByLevel}" class="chart-bar">
+                        <div class="bar-label" th:text="${entry.key.displayName}">Korosztály</div>
+                        <div class="bar-value" th:style="'height: ' + ${entry.value * 100 / 500} + '%'"
+                             th:text="${#numbers.formatDecimal(entry.value, 1, 1)}">0</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Esetleg később JavaScript kód a grafikonok dinamikus kezeléséhez
+</script>
+</body>
+</html>

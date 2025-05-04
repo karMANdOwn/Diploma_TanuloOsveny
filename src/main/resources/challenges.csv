@@ -1,0 +1,12 @@
+id,type,question,image_url,sound_url,correct_answer,option_1,option_2,option_3,option_4,hint
+1,COUNTING_FRUITS,Hány alma van a fán?,/images/challenges/apples.jpg,,5,3,4,5,6,Számold meg a piros gyümölcsöket!
+2,COUNTING_FRUITS,Hány körte van a kosárban?,/images/challenges/pears.jpg,,3,2,3,4,5,Számold meg a sárga gyümölcsöket!
+3,COUNTING_ANIMALS,Hány kutya van a képen?,/images/challenges/dogs.jpg,,4,3,4,5,6,Számold meg a kutyusokat!
+4,COUNTING_ANIMALS,Hány madár ül a fán?,/images/challenges/birds.jpg,,6,4,5,6,7,Számold meg a madarakat!
+5,COMPARE_NUMBERS,Hány macskával van több mint kutyával?,/images/challenges/cats_dogs.jpg,,2,1,2,3,4,Számold meg külön-külön az állatokat!
+6,ANIMAL_SOUND,Melyik állat hangját hallod?,,/sounds/cow.mp3,tehén,kutya,tehén,macska,ló,Ez egy háziállat hangja!
+7,ANIMAL_SOUND,Melyik állat hangját hallod?,,/sounds/lion.mp3,oroszlán,tigris,oroszlán,elefánt,medve,Ez egy vadállat hangja!
+8,BASIC_ADDITION,Mennyi 2 + 3?,/images/challenges/addition_2_3.jpg,,5,4,5,6,7,Számold meg az összes golyót!
+9,BASIC_SUBTRACTION,Mennyi 5 - 2?,/images/challenges/subtraction_5_2.jpg,,3,2,3,4,5,Számold meg, hány golyó maradt!
+10,COLOR_RECOGNITION,Milyen színű a labda?,/images/challenges/red_ball.jpg,,piros,kék,zöld,piros,sárga,A paradicsom is ilyen színű!
+11,SHAPE_RECOGNITION,Milyen forma látható a képen?,/images/challenges/triangle.jpg,,háromszög,kör,négyzet,háromszög,téglalap,Számold meg a csúcsait!

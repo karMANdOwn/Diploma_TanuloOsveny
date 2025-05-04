@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Válaszd ki a korosztályt - TanulóÖsvény</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+    <link rel="stylesheet" th:href="@{/css/choose-level.css}">
+</head>
+<body>
+<div class="level-container">
+    <h1>Válaszd ki a játék nehézségi szintjét</h1>
+
+    <!-- Felhasználói státusz megjelenítése (csak ha a user objektum rendelkezésre áll) -->
+    <div class="user-status" th:if="${user != null}">
+        <p>Bejelentkezve mint: <span th:text="${user.username}">felhasználó</span></p>
+        <div class="user-actions">
+            <a th:href="@{/profile}" class="btn btn-sm">Profil</a>
+            <a th:href="@{/logout}" class="btn btn-sm btn-outline">Kijelentkezés</a>
+        </div>
+    </div>
+
+    <div class="level-description">
+        <p>Válassz korosztályt a következő játékodhoz. Minden korosztálynak megfelelő típusú feladványok vannak.</p>
+    </div>
+
+    <form th:action="@{/user/game/choose-level}" method="post" class="level-form">
+        <div class="level-cards">
+            <div th:each="level : ${levels}" class="level-card"
+                 th:classappend="${level == currentLevel ? 'selected' : ''}">
+                <input type="radio" name="level" th:id="${level}"
+                       th:value="${level}" th:checked="${level == currentLevel}">
+                <label th:for="${level}" class="level-label">
+                    <div class="level-title" th:text="${level.displayName}">1. osztály</div>
+                    <div class="level-icon" th:classappend="${level.name()}">
+                        <img th:src="@{'/images/level-' + ${level.name()} + '.png'}"
+                             th:alt="${level.displayName}" class="level-image">
+                    </div>
+                    <div class="level-info">
+                        <div th:if="${level.name() == 'GRADE_1'}" class="level-features">
+                            <ul>
+                                <li>Képes feladványok</li>
+                                <li>Hangos feladványok</li>
+                                <li>Színek és formák felismerése</li>
+                                <li>Egyszerű számlálási feladatok</li>
+                            </ul>
+                        </div>
+                        <div th:if="${level.name() == 'GRADE_2_4'}" class="level-features">
+                            <ul>
+                                <li>Alapvető matematikai műveletek</li>
+                                <li>Egyszerű szöveges feladatok</li>
+                                <li>Nyelvtani gyakorlatok</li>
+                                <li>Logikai fejtörők</li>
+                            </ul>
+                        </div>
+                        <div th:if="${level.name() == 'GRADE_5_8'}" class="level-features">
+                            <ul>
+                                <li>Bonyolultabb matematikai feladatok</li>
+                                <li>Természettudományi kérdések</li>
+                                <li>Történelmi és földrajzi feladványok</li>
+                                <li>Összetett logikai és nyelvi kihívások</li>
+                            </ul>
+                        </div>
+                    </div>
+                </label>
+            </div>
+        </div>
+
+        <div class="level-actions">
+            <a th:href="@{/profile}" class="btn btn-secondary">Vissza a profilhoz</a>
+            <button type="submit" class="btn btn-primary">Játék indítása</button>
+        </div>
+    </form>
+</div>
+</body>
+</html>

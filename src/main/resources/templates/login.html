@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Bejelentkezés - TanulóÖsvény</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+    <link rel="stylesheet" th:href="@{/css/auth.css}">
+</head>
+<body>
+<div class="auth-container">
+    <div class="auth-card">
+        <h1>TanulóÖsvény</h1>
+        <h2>Bejelentkezés</h2>
+
+        <div th:if="${param.error}" class="alert alert-error">
+            Hibás felhasználónév vagy jelszó!
+        </div>
+
+        <div th:if="${param.logout}" class="alert alert-success">
+            Sikeresen kijelentkeztél!
+        </div>
+
+        <div th:if="${param.registered}" class="alert alert-success">
+            Sikeres regisztráció! Most már bejelentkezhetsz!
+        </div>
+
+        <form th:action="@{/login}" method="post">
+            <div class="form-group">
+                <label for="username">Felhasználónév</label>
+                <input type="text" id="username" name="username" required autofocus>
+            </div>
+
+            <div class="form-group">
+                <label for="password">Jelszó</label>
+                <input type="password" id="password" name="password" required>
+            </div>
+
+            <div class="form-actions">
+                <button type="submit" class="btn btn-primary">Bejelentkezés</button>
+            </div>
+        </form>
+
+        <div class="auth-links">
+            <p>Még nincs fiókod? <a th:href="@{/register}">Regisztráció</a></p>
+            <p><a th:href="@{/}">Vissza a főoldalra</a></p>
+        </div>
+    </div>
+
+    <div class="auth-info">
+        <h3>Üdvözlünk a TanulóÖsvényen!</h3>
+        <p>A TanulóÖsvény egy interaktív oktatójáték, amely segít a különböző korosztályú gyerekeknek játékosan tanulni.</p>
+        <ul>
+            <li>Elsősöknek képes és hangos feladványok</li>
+            <li>2-4. osztályosoknak korosztálynak megfelelő feladatok</li>
+            <li>5-8. osztályosoknak összetett, kihívást jelentő feladatok</li>
+        </ul>
+    </div>
+</div>
+</body>
+</html>

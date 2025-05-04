@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Felhasználók - TanulóÖsvény Admin</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+    <link rel="stylesheet" th:href="@{/css/admin.css}">
+</head>
+<body>
+<div class="admin-container">
+    <div class="admin-sidebar">
+        <h2>Admin Menü</h2>
+        <ul class="admin-menu">
+            <li><a th:href="@{/admin}">Irányítópult</a></li>
+            <li class="active"><a th:href="@{/admin/users}">Felhasználók</a></li>
+            <li><a th:href="@{/admin/sessions}">Játékmenetek</a></li>
+            <li><a th:href="@{/admin/challenges}">Feladványok</a></li>
+            <li><a th:href="@{/logout}">Kijelentkezés</a></li>
+        </ul>
+    </div>
+
+    <div class="admin-content">
+        <h1>Felhasználók Kezelése</h1>
+
+        <div class="search-filter">
+            <input type="text" id="userSearch" placeholder="Keresés név vagy felhasználónév alapján...">
+            <select id="educationFilter">
+                <option value="">Összes korosztály</option>
+                <option th:each="level : ${T(com.example.gyerekjatek.model.User.EducationLevel).values()}"
+                        th:value="${level}" th:text="${level.displayName}"></option>
+            </select>
+        </div>
+
+        <div class="data-table-container">
+            <table class="data-table">
+                <thead>
+                <tr>
+                    <th>Azonosító</th>
+                    <th>Felhasználónév</th>
+                    <th>Teljes név</th>
+                    <th>Életkor</th>
+                    <th>Évfolyam</th>
+                    <th>Regisztráció dátuma</th>
+                    <th>Műveletek</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="user : ${users}">
+                    <td th:text="${user.id}">1</td>
+                    <td th:text="${user.username}">felhasználó</td>
+                    <td th:text="${user.fullName}">Teljes Név</td>
+                    <td th:text="${user.age}">10</td>
+                    <td th:text="${user.educationLevel.displayName}">1. osztály</td>
+                    <td th:text="${#temporals.format(user.registrationDate, 'yyyy.MM.dd HH:mm')}">2023.01.01</td>
+                    <td class="actions">
+                        <a th:href="@{/admin/users/{id}(id=${user.id})}" class="btn btn-sm">Részletek</a>
+                        <a th:href="@{/admin/users/{id}/edit(id=${user.id})}" class="btn btn-sm">Szerkesztés</a>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Keresés és szűrés funkció
+    document.getElementById('userSearch').addEventListener('input', filterTable);
+    document.getElementById('educationFilter').addEventListener('change', filterTable);
+
+    function filterTable() {
+        const searchTerm = document.getElementById('userSearch').value.toLowerCase();
+        const educationFilter = document.getElementById('educationFilter').value;
+        const rows = document.querySelectorAll('.data-table tbody tr');
+
+        rows.forEach(row => {
+            const username = row.children[1].textContent.toLowerCase();
+            const fullName = row.children[2].textContent.toLowerCase();
+            const education = row.children[4].textContent;
+
+            const matchesSearch = username.includes(searchTerm) || fullName.includes(searchTerm);
+            const matchesEducation = !educationFilter || education.includes(educationFilter);
+
+            row.style.display = (matchesSearch && matchesEducation) ? '' : 'none';
+        });
+    }
+</script>
+</body>
+</html>
