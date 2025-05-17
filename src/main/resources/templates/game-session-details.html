@@ -44,20 +44,22 @@
 
         .info-item {
             display: flex;
-            flex-direction: column;
+            flex-direction: column-reverse; /* Megfordítjuk a címke és érték sorrendjét */
             align-items: center;
+        }
+
+        .info-label {
+            font-size: 0.9em;
+            color: #4a6baf;
+            font-weight: bold;
+            margin-bottom: 8px;
         }
 
         .info-value {
             font-size: 1.2em;
             font-weight: bold;
-            color: #4a6baf;
-            margin-bottom: 5px;
-        }
-
-        .info-label {
-            font-size: 0.9em;
-            color: #666;
+            color: #333;
+            margin-top: 5px;
         }
 
         .attempts-container {
@@ -171,39 +173,36 @@
             <a th:href="@{/profile}" class="btn">Vissza a profilhoz</a>
         </div>
 
-        <!-- Játékmenet alapadatai -->
+        <!-- Játékmenet alapadatai - session helyett gameSession minden hivatkozásnál -->
         <div class="session-info">
             <div class="info-item">
-                <div class="info-value" th:text="${#temporals.format(session.startTime, 'yyyy.MM.dd HH:mm')}">2023.01.01 12:00</div>
                 <div class="info-label">Kezdés ideje</div>
+                <div class="info-value" th:text="${gameSession.startTime != null ? #temporals.format(gameSession.startTime, 'yyyy.MM.dd HH:mm') : '-'}">2023.01.01 12:00</div>
             </div>
 
             <div class="info-item">
-                <div class="info-value" th:if="${session.endTime != null}" th:text="${#temporals.format(session.endTime, 'yyyy.MM.dd HH:mm')}">2023.01.01 12:30</div>
-                <div class="info-value" th:unless="${session.endTime != null}">Folyamatban</div>
                 <div class="info-label">Befejezés ideje</div>
+                <div class="info-value" th:text="${gameSession.endTime != null ? #temporals.format(gameSession.endTime, 'yyyy.MM.dd HH:mm') : 'Folyamatban'}">2023.01.01 12:30</div>
             </div>
 
             <div class="info-item">
-                <div class="info-value" th:if="${session.educationLevel != null}" th:text="${session.educationLevel.displayName}">1. osztály</div>
-                <div class="info-value" th:unless="${session.educationLevel != null}">Nincs megadva</div>
                 <div class="info-label">Korosztály</div>
+                <div class="info-value" th:text="${gameSession.educationLevel != null ? gameSession.educationLevel.displayName : '-'}">1. osztály</div>
             </div>
 
             <div class="info-item">
-                <div class="info-value" th:text="${session.finalScore} + ' pont'">100 pont</div>
                 <div class="info-label">Végső pontszám</div>
+                <div class="info-value" th:text="${gameSession.finalScore > 0 ? gameSession.finalScore + ' pont' : '0 pont'}">100 pont</div>
             </div>
 
             <div class="info-item">
-                <div class="info-value" th:text="${session.completed != null && session.completed ? 'Befejezve' : 'Folyamatban'}">Állapot</div>
                 <div class="info-label">Állapot</div>
+                <div class="info-value" th:text="${gameSession.completed ? 'Befejezve' : 'Folyamatban'}">Állapot</div>
             </div>
 
             <div class="info-item">
-                <div class="info-value" th:if="${session.endTime != null}" th:text="${session.getDurationMinutes()} + ' perc'">30 perc</div>
-                <div class="info-value" th:unless="${session.endTime != null}">-</div>
                 <div class="info-label">Játékidő</div>
+                <div class="info-value" th:text="${gameSession.getDurationMinutes() > 0 ? gameSession.getDurationMinutes() + ' perc' : '-'}">30 perc</div>
             </div>
         </div>
 

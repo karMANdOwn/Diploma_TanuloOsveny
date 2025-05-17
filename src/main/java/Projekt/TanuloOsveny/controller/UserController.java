@@ -1,5 +1,6 @@
 package Projekt.TanuloOsveny.controller;
 
+import Projekt.TanuloOsveny.model.Game;
 import Projekt.TanuloOsveny.model.GameSession;
 import Projekt.TanuloOsveny.model.User;
 import Projekt.TanuloOsveny.repository.GameSessionRepository;
@@ -13,6 +14,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import jakarta.validation.Valid;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Controller
@@ -132,7 +134,42 @@ public class UserController {
             return "redirect:/profile";
         }
 
-        model.addAttribute("session", session);
+        // Biztosítsuk, hogy a finalScore érték nem negatív
+        if (session.getFinalScore() < 0) {
+            session.setFinalScore(0);
+        }
+
+        // Korosztály beállítása, ha nincs
+        if (session.getEducationLevel() == null) {
+            session.setEducationLevel(user.getEducationLevel());
+            gameSessionRepository.save(session);
+        }
+
+        // Ha a játék már befejezett, de az adatok nem tükrözik ezt megfelelően
+        Game game = gameService.getGame(session.getGameId());
+
+        if (!session.isCompleted()) {
+            // Ellenőrizzük, hogy a játék aktív-e még
+            if (game == null || (game.getGameState() != null && game.getGameState() == Game.GameState.FINISHED)) {
+                // A játék már befejeződött vagy nem aktív, zárjuk le a játékmenetet
+                session.setCompleted(true);
+
+                // Végső idő beállítása, ha még nincs
+                if (session.getEndTime() == null) {
+                    session.setEndTime(LocalDateTime.now());
+                }
+
+                // Végső pontszám átvétele a játékból, ha létezik
+                if (game != null && game.getPlayer() != null) {
+                    session.setFinalScore(game.getPlayer().getScore());
+                }
+
+                gameSessionRepository.save(session);
+            }
+        }
+
+        // Itt módosítsuk a model attribútum nevét 'session'-ről 'gameSession'-re
+        model.addAttribute("gameSession", session);
         model.addAttribute("attempts", session.getChallengeAttempts());
 
         return "game-session-details";

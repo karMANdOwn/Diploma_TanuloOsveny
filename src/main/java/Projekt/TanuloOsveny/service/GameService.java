@@ -26,7 +26,7 @@ public class GameService {
 
     public Game createNewGame(User user) {
         Game game = new Game();
-        game.setBoard(generateBoard(50, user.getEducationLevel())); // 50 mezős játéktábla
+        game.setBoard(generateBoard(21, user.getEducationLevel())); // 21 mezős játéktábla
         activeGames.put(game.getId(), game);
 
         // Játékmenet mentése az adatbázisba
@@ -42,7 +42,7 @@ public class GameService {
     // Visszafelé kompatibilitás miatt
     public Game createNewGame() {
         Game game = new Game();
-        game.setBoard(generateBoard(50, null)); // 50 mezős alap játéktábla
+        game.setBoard(generateBoard(21, null)); // 21 mezős alap játéktábla
         activeGames.put(game.getId(), game);
         return game;
     }
@@ -67,7 +67,7 @@ public class GameService {
             game.setId(gameId);
 
             // Tábla inicializálása az adott nehézségi szintnek megfelelően
-            game.setBoard(generateBoard(50, gameSession.getEducationLevel()));
+            game.setBoard(generateBoard(21, gameSession.getEducationLevel())); //21 mező
 
             // Játék állapotának beállítása
             game.setGameState(Game.GameState.WAITING_FOR_ROLL);
